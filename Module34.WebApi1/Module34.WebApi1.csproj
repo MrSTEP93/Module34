@@ -5,6 +5,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Models\HomeOptions.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Configuration\HomeOptions.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
   </ItemGroup>
 

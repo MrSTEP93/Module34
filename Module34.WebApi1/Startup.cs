@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Module34.WebApi1.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,18 +16,29 @@ namespace Module34.WebApi1
 {
     public class Startup
     {
+        /// <summary>
+        /// Загрузка конфигурации из файла Json
+        /// </summary>
+        private IConfiguration Configuration
+        { get; } = new ConfigurationBuilder()
+          .AddJsonFile("HomeOptions.json")
+          .Build();
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
-
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Добавляем новый сервис
+            services.Configure<HomeOptions>(Configuration);
 
+            // Нам не нужны представления, но в MVC бы здесь стояло AddControllersWithViews()
             services.AddControllers();
+
+            // поддерживает автоматическую генерацию документации WebApi с использованием Swagger
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Module34.WebApi1", Version = "v1" });
@@ -36,6 +48,7 @@ namespace Module34.WebApi1
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            // Проставляем специфичные для запуска при разработке свойства
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -47,6 +60,7 @@ namespace Module34.WebApi1
 
             app.UseAuthorization();
 
+            // Сопоставляем маршруты с контроллерами
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
