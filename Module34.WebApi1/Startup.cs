@@ -10,6 +10,7 @@ using Module34.WebApi1.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Module34.WebApi1
@@ -21,13 +22,18 @@ namespace Module34.WebApi1
         /// </summary>
         private IConfiguration Configuration
         { get; } = new ConfigurationBuilder()
+          .AddJsonFile("appsettings.json")
+          .AddJsonFile("appsettings.Development.json")
           .AddJsonFile("HomeOptions.json")
           .Build();
 
+        /*
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            
         }
+        */
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -43,6 +49,10 @@ namespace Module34.WebApi1
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Module34.WebApi1", Version = "v1" });
             });
+
+            // Подключаем автомаппинг
+            var assembly = Assembly.GetAssembly(typeof(MappingProfile));
+            services.AddAutoMapper(assembly);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
