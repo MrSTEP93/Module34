@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Module34.WebApi1.Contracts.Devices;
 using Module34.WebApi1.Models;
@@ -44,7 +43,8 @@ namespace Module34.WebApi1.Controllers
         [Route("Add")]
         public IActionResult Add([FromBody] AddDeviceRequest request)
         {
-            return StatusCode(200, $"Устройство {request.Name} добавлено!");
+
+            return StatusCode(200, request.Name);
         }
 
         [HttpGet]
@@ -63,6 +63,15 @@ namespace Module34.WebApi1.Controllers
             string fileName = $"{name}.pdf";
             return PhysicalFile(filePath, fileType, fileName);
 
+        }
+
+        [HttpPost]
+        [Route("AddManual")]
+        public IActionResult AddManual([FromBody]string name)
+        {
+
+
+            return StatusCode(404);
         }
     }
 }
