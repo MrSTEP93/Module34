@@ -11,9 +11,9 @@ namespace Module34.WebApi1.Data.Repos
     /// </summary>
     public class RoomRepository : IRoomRepository
     {
-        private readonly HomeApiContext _context;
+        private readonly WebApi1Context _context;
 
-        public RoomRepository(HomeApiContext context)
+        public RoomRepository(WebApi1Context context)
         {
             _context = context;
         }

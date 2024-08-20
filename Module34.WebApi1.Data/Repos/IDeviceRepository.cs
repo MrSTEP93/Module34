@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Module34.WebApi1.Data.Repos
 {
-    internal interface IDeviceRepository
+    public interface IDeviceRepository
     {
         Task<Device[]> GetDevices();
         Task<Device> GetDeviceByName(string name);

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Module34.WebApi1.Data.Models;
+using Module34.WebApi1.Data.Queries;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +14,9 @@ namespace Module34.WebApi1.Data.Repos
     /// </summary>
     public class DeviceRepository : IDeviceRepository
     {
-        private readonly HomeApiContext _context;
+        private readonly WebApi1Context _context;
 
-        public DeviceRepository(HomeApiContext context)
+        public DeviceRepository(WebApi1Context context)
         {
             _context = context;
         }

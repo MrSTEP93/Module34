@@ -3,24 +3,33 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Module34.WebApi1.Contracts.Devices;
+using Module34.WebApi1.Contracts.Models.Devices;
+using Module34.WebApi1.Data.Models;
+using Module34.WebApi1.Data.Queries;
+using Module34.WebApi1.Data.Repos;
 using Module34.WebApi1.Models;
+using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Module34.WebApi1.Controllers
 {
+    /// <summary>
+    /// Контроллер устройств
+    /// </summary>
     [ApiController]
     [Route("[controller]")]
-    public class DevicesController : Controller
+    public class DevicesController : ControllerBase
     {
-        IHostEnvironment _env;
-        private IOptions<HomeOptions> _options;
+        private IDeviceRepository _devices;
+        private IRoomRepository _rooms;
         private IMapper _mapper;
 
-        public DevicesController(IHostEnvironment env, IOptions<HomeOptions> options, IMapper mapper)
+        public DevicesController(IDeviceRepository devices, IRoomRepository rooms, IMapper mapper)
         {
-            _env = env;
-            _options = options;
+            _devices = devices;
+            _rooms = rooms;
             _mapper = mapper;
         }
 
@@ -29,49 +38,69 @@ namespace Module34.WebApi1.Controllers
         /// </summary>
         [HttpGet]
         [Route("")]
-        public IActionResult Get()
+        public async Task<IActionResult> GetDevices()
         {
-            return StatusCode(200, "Устройства отсутствуют");
+            var devices = await _devices.GetDevices();
+
+            var resp = new GetDevicesResponse
+            {
+                DeviceAmount = devices.Length,
+                Devices = _mapper.Map<Device[], DeviceView[]>(devices)
+            };
+
+            return StatusCode(200, resp);
         }
+
 
         /// <summary>
         /// Добавление нового устройства
-        /// [FromBody] // Атрибут, указывающий, откуда брать значение объекта
-        /// request // Объект запроса
         /// </summary>
         [HttpPost]
-        [Route("Add")]
-        public IActionResult Add([FromBody] AddDeviceRequest request)
+        [Route("")]
+        public async Task<IActionResult> Add(AddDeviceRequest request)
         {
+            var room = await _rooms.GetRoomByName(request.RoomLocation);
+            if (room == null)
+                return StatusCode(400, $"Ошибка: Комната {request.RoomLocation} не подключена. Сначала подключите комнату!");
 
-            return StatusCode(200, request.Name);
+            var device = await _devices.GetDeviceByName(request.Name);
+            if (device != null)
+                return StatusCode(400, $"Ошибка: Устройство {request.Name} уже существует.");
+
+            var newDevice = _mapper.Map<AddDeviceRequest, Device>(request);
+            await _devices.SaveDevice(newDevice, room);
+
+            return StatusCode(201, $"Устройство {request.Name} добавлено. Идентификатор: {newDevice.Id}");
         }
 
-        [HttpGet]
-        [HttpHead]
-        [Route("GetManual/{name}")]
-        public IActionResult GetManual([FromRoute] string name)
+        /// <summary>
+        /// Обновление существующего устройства
+        /// </summary>
+        [HttpPatch]
+        [Route("{id}")]
+        public async Task<IActionResult> Edit(
+            [FromRoute] Guid id,
+            [FromBody] EditDeviceRequest request)
         {
-            var staticPath = Path.Combine(_env.ContentRootPath, "Static");
-            var filePath = Directory.GetFiles(staticPath)
-                .FirstOrDefault(f => f.Split("\\").Last().Split('.')[0] == name);
+            var room = await _rooms.GetRoomByName(request.NewRoom);
+            if (room == null)
+                return StatusCode(400, $"Ошибка: Комната {request.NewRoom} не подключена. Сначала подключите комнату!");
 
-            if (string.IsNullOrEmpty(filePath))
-                return StatusCode(404, $"Инструкция для оборудования {name} не найдена. Проверьте корректность названия");
+            var device = await _devices.GetDeviceById(id);
+            if (device == null)
+                return StatusCode(400, $"Ошибка: Устройство с идентификатором {id} не существует.");
 
-            string fileType = "file/pdf";
-            string fileName = $"{name}.pdf";
-            return PhysicalFile(filePath, fileType, fileName);
+            var withSameName = await _devices.GetDeviceByName(request.NewName);
+            if (withSameName != null)
+                return StatusCode(400, $"Ошибка: Устройство с именем {request.NewName} уже подключено. Выберите другое имя!");
 
-        }
+            await _devices.UpdateDevice(
+                device,
+                room,
+                new UpdateDeviceQuery(request.NewName, request.NewSerial)
+            );
 
-        [HttpPost]
-        [Route("AddManual")]
-        public IActionResult AddManual([FromBody]string name)
-        {
-
-
-            return StatusCode(404);
+            return StatusCode(200, $"Устройство обновлено!  Имя — {device.Name}, Серийный номер — {device.SerialNumber},  Комната подключения  —  {device.Room.Name}");
         }
     }
 }
