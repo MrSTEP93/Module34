@@ -19,6 +19,6 @@ namespace Module34.WebApi1.Contracts.Devices
         
         public bool GasUsage { get; set; }
         
-        public string Location { get; set; }
+        public string RoomLocation { get; set; }
     }
 }
