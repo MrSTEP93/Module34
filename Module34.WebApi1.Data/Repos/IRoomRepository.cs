@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Module34.WebApi1.Data.Models;
 
 namespace Module34.WebApi1.Data.Repos
@@ -8,7 +9,10 @@ namespace Module34.WebApi1.Data.Repos
     /// </summary>
     public interface IRoomRepository
     {
+        Task<Room[]> GetAllRooms();
+
         Task<Room> GetRoomByName(string name);
+
         Task AddRoom(Room room);
     }
 }

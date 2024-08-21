@@ -18,7 +18,7 @@ namespace Module34.WebApi1.Contracts.Validators
             RuleFor(x => x.Area).NotEmpty();
             RuleFor(x => x.Name).NotEmpty();
             RuleFor(x => x.Voltage).NotEmpty();
-            RuleFor(x => x.GasConnected).NotEmpty();
+            RuleFor(x => x.GasConnected).NotNull();
         }
     }
 }

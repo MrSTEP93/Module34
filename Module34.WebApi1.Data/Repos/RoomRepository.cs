@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Module34.WebApi1.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using Module34.WebApi1.Data.Repos;
+using System.Collections.Generic;
 
 namespace Module34.WebApi1.Data.Repos
 {
@@ -16,6 +17,15 @@ namespace Module34.WebApi1.Data.Repos
         public RoomRepository(WebApi1Context context)
         {
             _context = context;
+        }
+
+        /// <summary>
+        /// Отобрать все комнаты
+        /// </summary>
+        /// <returns></returns>
+        public async Task<Room[]> GetAllRooms()
+        {
+            return await _context.Rooms.ToArrayAsync();
         }
 
         /// <summary>

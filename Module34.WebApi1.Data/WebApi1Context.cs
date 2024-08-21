@@ -17,7 +17,7 @@ namespace Module34.WebApi1.Data
 
         public WebApi1Context(DbContextOptions<WebApi1Context> options) : base(options)
         {
-            Database.EnsureDeleted();
+            //Database.EnsureDeleted();
             Database.EnsureCreated();
         }
 

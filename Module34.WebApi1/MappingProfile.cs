@@ -23,6 +23,7 @@ namespace Module34.WebApi1
             CreateMap<HomeOptions, InfoResponse>()
                 .ForMember(m => m.AddressInfo,
                     opt => opt.MapFrom(src => src.Address));
+            CreateMap<Room, RoomView>();
 
             // Валидация запросов:
             CreateMap<AddDeviceRequest, Device>()

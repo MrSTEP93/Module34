@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using AutoMapper.Configuration.Annotations;
 using Microsoft.AspNetCore.Mvc;
 using Module34.WebApi1.Contracts.Models.Rooms;
 using Module34.WebApi1.Data.Models;
 using Module34.WebApi1.Data.Repos;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Module34.WebApi1.Controllers
@@ -24,12 +26,24 @@ namespace Module34.WebApi1.Controllers
         }
 
         //TODO: Задание - добавить метод на получение всех существующих комнат
+        [HttpGet]
+        [Route("")]
+        public async Task<IActionResult> GetRooms()
+        {
+            var rooms = await _repository.GetAllRooms();
+            var resp = new GetRoomsResponse()
+            {
+                RoomAmount = rooms.Length,
+                Rooms = _mapper.Map<Room[], RoomView[]>(rooms)
+            };
+            return StatusCode(200, resp);
+        }
 
         /// <summary>
         /// Добавление комнаты
         /// </summary>
         [HttpPost]
-        [Route("")]
+        [Route("Add")]
         public async Task<IActionResult> Add([FromBody] AddRoomRequest request)
         {
             var existingRoom = await _repository.GetRoomByName(request.Name);
