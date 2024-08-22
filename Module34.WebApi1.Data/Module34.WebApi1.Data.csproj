@@ -13,4 +13,8 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="5.0.17" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Module34.WebApi1.Contracts\Module34.WebApi1.Contracts.csproj" />
+  </ItemGroup>
+
 </Project>

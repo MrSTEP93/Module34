@@ -3,8 +3,11 @@ using AutoMapper.Configuration.Annotations;
 using Microsoft.AspNetCore.Mvc;
 using Module34.WebApi1.Contracts.Models.Rooms;
 using Module34.WebApi1.Data.Models;
+using Module34.WebApi1.Data.Queries;
 using Module34.WebApi1.Data.Repos;
+using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Module34.WebApi1.Controllers
@@ -54,6 +57,31 @@ namespace Module34.WebApi1.Controllers
             }
 
             return StatusCode(409, $"Ошибка: Комната {request.Name} уже существует.");
+        }
+
+        /// <summary>
+        /// Обновление существующей комнаты
+        /// </summary>
+        [HttpPut]
+        [Route("Update/{id}")]
+        public async Task<IActionResult> Update(
+            [FromRoute] Guid id, 
+            [FromBody] UpdateRoomRequest request)
+        {
+            var existingRoom = await _repository.GetRoomById(id);
+            if (existingRoom == null) {
+                return StatusCode(409, $"Ошибка: Комната c id {existingRoom.Id} не существует.");
+            } else
+            {
+                var updateRoomQuery = new UpdateRoomQuery(id, request);
+                var response = new StringBuilder($"Комната {existingRoom.Name} обновлена!");
+                if (existingRoom.Name != request.Name)
+                    response.Append($" Новое имя {request.Name}");
+                
+                await _repository.UpdateRoom(updateRoomQuery);
+                
+                return StatusCode(201, response.ToString());
+            }
         }
     }
 }

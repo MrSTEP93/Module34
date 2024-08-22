@@ -70,9 +70,9 @@ namespace Module34.WebApi1.Data.Repos
         }
 
         /// <summary>
-        /// Обновить существующее устройство
+        /// Отредактировать существующее устройство
         /// </summary>
-        public async Task UpdateDevice(Device device, Room room, UpdateDeviceQuery query)
+        public async Task EditDevice(Device device, Room room, EditDeviceQuery query)
         {
             // Привязываем новое устройство к соответствующей комнате перед сохранением
             device.RoomId = room.Id;

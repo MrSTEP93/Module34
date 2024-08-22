@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Module34.WebApi1.Data.Models;
+using Module34.WebApi1.Data.Queries;
 
 namespace Module34.WebApi1.Data.Repos
 {
@@ -13,6 +15,10 @@ namespace Module34.WebApi1.Data.Repos
 
         Task<Room> GetRoomByName(string name);
 
+        Task<Room> GetRoomById(Guid id);
+
         Task AddRoom(Room room);
+        
+        Task UpdateRoom(UpdateRoomQuery query);
     }
 }

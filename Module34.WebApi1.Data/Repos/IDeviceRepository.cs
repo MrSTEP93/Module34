@@ -14,7 +14,7 @@ namespace Module34.WebApi1.Data.Repos
         Task<Device> GetDeviceByName(string name);
         Task<Device> GetDeviceById(Guid id);
         Task SaveDevice(Device device, Room room);
-        Task UpdateDevice(Device device, Room room, UpdateDeviceQuery query);
+        Task EditDevice(Device device, Room room, EditDeviceQuery query);
         Task DeleteDevice(Device device);
     }
 }

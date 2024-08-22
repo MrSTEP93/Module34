@@ -73,10 +73,10 @@ namespace Module34.WebApi1.Controllers
         }
 
         /// <summary>
-        /// Обновление существующего устройства
+        /// Редактирование существующего устройства
         /// </summary>
         [HttpPatch]
-        [Route("Update/{id}")]
+        [Route("Edit/{id}")]
         public async Task<IActionResult> Edit(
             [FromRoute] Guid id,
             [FromBody] EditDeviceRequest request)
@@ -93,10 +93,10 @@ namespace Module34.WebApi1.Controllers
             if (withSameName != null)
                 return StatusCode(400, $"Ошибка: Устройство с именем {request.NewName} уже подключено. Выберите другое имя!");
 
-            await _devices.UpdateDevice(
+            await _devices.EditDevice(
                 device,
                 room,
-                new UpdateDeviceQuery(request.NewName, request.NewSerial)
+                new EditDeviceQuery(request.NewName, request.NewSerial)
             );
 
             return StatusCode(200, $"Устройство обновлено!  Имя — {device.Name}, Серийный номер — {device.SerialNumber},  Комната подключения  —  {device.Room.Name}");
