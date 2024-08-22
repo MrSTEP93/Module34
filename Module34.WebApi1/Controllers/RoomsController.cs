@@ -25,7 +25,6 @@ namespace Module34.WebApi1.Controllers
             _mapper = mapper;
         }
 
-        //TODO: Задание - добавить метод на получение всех существующих комнат
         [HttpGet]
         [Route("")]
         public async Task<IActionResult> GetRooms()

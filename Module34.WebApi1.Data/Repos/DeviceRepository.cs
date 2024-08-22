@@ -101,7 +101,7 @@ namespace Module34.WebApi1.Data.Repos
         {
             // Удаление мз базы
             var entry = _context.Entry(device);
-            if (entry.State == EntityState.Detached)
+            //if (entry.State == EntityState.Detached)
                 _context.Devices.Remove(device);
 
             // Сохранение изменений

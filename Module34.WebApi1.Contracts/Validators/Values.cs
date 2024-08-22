@@ -13,6 +13,7 @@ namespace Module34.WebApi1.Contracts.Validators
     {
         public static string[] ValidRooms = new[]
         {
+            "Спальня",
             "Кухня",
             "Ванная",
             "Гостиная",

@@ -51,12 +51,11 @@ namespace Module34.WebApi1.Controllers
             return StatusCode(200, resp);
         }
 
-
         /// <summary>
         /// Добавление нового устройства
         /// </summary>
         [HttpPost]
-        [Route("")]
+        [Route("Add")]
         public async Task<IActionResult> Add(AddDeviceRequest request)
         {
             var room = await _rooms.GetRoomByName(request.RoomLocation);
@@ -77,7 +76,7 @@ namespace Module34.WebApi1.Controllers
         /// Обновление существующего устройства
         /// </summary>
         [HttpPatch]
-        [Route("{id}")]
+        [Route("Update/{id}")]
         public async Task<IActionResult> Edit(
             [FromRoute] Guid id,
             [FromBody] EditDeviceRequest request)
@@ -102,5 +101,23 @@ namespace Module34.WebApi1.Controllers
 
             return StatusCode(200, $"Устройство обновлено!  Имя — {device.Name}, Серийный номер — {device.SerialNumber},  Комната подключения  —  {device.Room.Name}");
         }
+
+        // 
+        /// <summary>
+        /// Удаление существующего устройства
+        /// </summary>
+        [HttpDelete]
+        [Route("Delete/{id}")]
+        public async Task<IActionResult> Delete([FromRoute] Guid id)
+        {
+            var device = await _devices.GetDeviceById(id);
+            if (device == null)
+                return StatusCode(400, $"Ошибка: Устройство с идентификатором {id} не существует.");
+
+            await _devices.DeleteDevice(device);
+
+            return StatusCode(200, $"Удалено устройство {device.Name} (id={device.Id})");
+        }
+
     }
 }
